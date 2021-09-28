@@ -1,0 +1,98 @@
+html,body,.outer{
+    height:100%;
+    background-color:rgb(134, 206, 235);
+}
+h1,h4{
+    text-align: center;
+    margin:0px;
+}
+.top,
+.bottom{
+    height:50%;
+}
+.outer{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.content{
+    padding:5px 20px 20px 20px;
+    height: 450px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    border:2px solid black;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(37, 37, 37);
+}
+
+.screen{
+    text-align: right;
+    color:white;
+    border:2px solid black;
+    height: 105px;
+    width:340px;
+    background-color: rgb(80, 77, 77);
+}
+.keys{
+    gap:2px;
+    display: flex;
+    flex-direction: column;
+}
+
+.numbers button:hover{
+    background-color: rgb(240, 236, 236);
+    transform: scale(1.01);
+}
+p{
+    margin-top:5px;
+    margin-right: 5px;
+}
+.operator:hover,
+.top-keys button:hover{
+    background-color:rgb(224, 176, 54) ;
+}
+button{
+    border: 0;
+    height:60px;
+    width:80px;
+}
+.zero{
+    flex-grow: 2;
+}
+.top-keys{
+    gap:2px;
+    height:60px;
+    margin:20px 20px 0 20px;
+    display: flex;
+    flex: 1 1 auto;
+}
+.bottom-keys{
+    gap:2px;
+    align-items: center;
+    display: flex;
+}
+
+.numbers{
+    display: flex;
+    flex-wrap: wrap;
+    gap:2px;
+    padding-left:20px;
+    
+}
+.numbers button{
+    background-color: rgb(220, 221, 213);
+}
+.side button,
+.top-keys button{
+    background-color: rgb(241, 196, 82);
+}
+.side{  
+    display: flex;
+    gap:2px;
+    padding-right: 20px;
+    flex-direction: column;
+}
