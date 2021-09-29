@@ -23,8 +23,14 @@ function clear(){
 }
 
 function displayNumber(button){
-        paraBottom.textContent=button.textContent;
+        if(paraBottom.textContent=="0" || isLastButtonOperator || isLastButtonEqualTo)
+            paraBottom.textContent=button.textContent
+        else if(!isLastButtonOperator)
+            paraBottom.textContent+=button.textContent;
+
+        total=paraBottom.textContent; //change value of total to current current number
         isLastButtonOperator=0;
+        isLastButtonEqualTo=0;
     } 
 
 //computes the total of the two arguments passed 
@@ -53,8 +59,9 @@ function displayTotal(a,b,button){
     checkDividebyZero();
     if(button.textContent !="=") //if button is not '=' then the display the total(which doesn't change) and operator(which could change) on the top screen
         paraTop.textContent=`${total} ${button.textContent}`;
-    else if( button.textContent=="=" && isLastButtonOperator==0) //if button is '=' and the last button was a number then condition is true
-        paraTop.textContent=`${a}${operator}${b} =`;
+    else if( button.textContent=="="){ //if button is '=' and the last button was a number then condition is true
+        paraTop.textContent=`${a} ${operator} ${b} =`;
+    }
     paraBottom.textContent=total;
 }
 
@@ -62,6 +69,7 @@ const bottomScreen=document.querySelector('.bottom');
 const topScreen=document.querySelector('.top')
 const buttons=document.querySelectorAll('button');
 let isLastButtonOperator=0;
+let isLastButtonEqualTo=0;
 let paraBottom=document.createElement('p');
 let paraTop=document.createElement('p');
 let operator;
@@ -83,9 +91,14 @@ buttons.forEach((button)=>{
             else if(paraTop.textContent && paraBottom.textContent){//if there exists text on the top half of the calculator 
                 let a=parseFloat(paraTop.textContent.replace(/[^0-9.-]/g,''));
                 let b=parseFloat(paraBottom.textContent.replace(/[^0-9.-]/g,''));
-                if(isLastButtonOperator==0)//if last button pressed is not operator then total is computed
+                if(isLastButtonOperator==0){//if last button pressed is not operator then total is computed
                     computeTotal(a,b); 
-                displayTotal(a,b,button);
+                    displayTotal(a,b,button);
+                }
+                else if(button.textContent!="=" && isLastButtonOperator){//last button pressed is not '=' but the last button is an operator, then we only change the
+                    paraTop.textContent=`${total} ${button.textContent}`;
+                }
+
             }
             if(button.textContent!="=")//since = is not an operator
                 operator=button.textContent;
@@ -93,6 +106,9 @@ buttons.forEach((button)=>{
         }
         else if(button.classList=="clear"){
             clear(button);
+        }
+        else if(button.classList=="backspace"){
+            paraBottom.textContent=paraBottom.textContent.slice(0,-1);
         }
     })
 })
