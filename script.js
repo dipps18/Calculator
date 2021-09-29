@@ -29,7 +29,7 @@ function displayNumber(button){
 
 //computes the total of the two arguments passed 
 function computeTotal(a,b,button){
-    if(isLastButtonOperator==0){
+ 
         if(operator=="+")
             total=add(a,b);
         else if(operator=="-")
@@ -42,7 +42,6 @@ function computeTotal(a,b,button){
                 alert("Cannot divide by 0");          
         }
   
-    }
 }
 
 function checkDividebyZero(){
@@ -52,11 +51,11 @@ function checkDividebyZero(){
 
 function displayTotal(a,b,button){
     checkDividebyZero();
-    if(button.textContent !="=")
-    paraTop.textContent=`${total} ${button.textContent}`;
-else if( button.textContent=="=" && isLastButtonOperator==0)
-    paraTop.textContent=`${a}${operator}${b} =`;
-paraBottom.textContent=total;
+    if(button.textContent !="=") //if button is not '=' then the display the total(which doesn't change) and operator(which could change) on the top screen
+        paraTop.textContent=`${total} ${button.textContent}`;
+    else if( button.textContent=="=" && isLastButtonOperator==0) //if button is '=' and the last button was a number then condition is true
+        paraTop.textContent=`${a}${operator}${b} =`;
+    paraBottom.textContent=total;
 }
 
 const bottomScreen=document.querySelector('.bottom');
@@ -65,11 +64,13 @@ const buttons=document.querySelectorAll('button');
 let isLastButtonOperator=0;
 let paraBottom=document.createElement('p');
 let paraTop=document.createElement('p');
+let operator;
+let total=0;
+
 paraBottom.textContent=0;
 bottomScreen.append(paraBottom);
 topScreen.append(paraTop);
-let operator;
-let total=0;
+
 
 buttons.forEach((button)=>{
 
@@ -77,17 +78,17 @@ buttons.forEach((button)=>{
         if(button.parentElement.classList=="numbers")
             displayNumber(button);
         else if(button.classList=="operator"){
-            if(!paraTop.textContent){
+            if(!paraTop.textContent)//if there is no operator pressed then the number previously pressed along with the operator will be displayed on the top half of the screen
                 paraTop.textContent=`${paraBottom.textContent} ${button.textContent}`;
-            }
-            else if(paraTop.textContent){
+            else if(paraTop.textContent && paraBottom.textContent){//if there exists text on the top half of the calculator 
                 let a=parseFloat(paraTop.textContent.replace(/[^0-9.-]/g,''));
                 let b=parseFloat(paraBottom.textContent.replace(/[^0-9.-]/g,''));
-                computeTotal(a,b);
+                if(isLastButtonOperator==0)//if last button pressed is not operator then total is computed
+                    computeTotal(a,b); 
                 displayTotal(a,b,button);
-                console.log(button.textContent);
             }
-            operator=button.textContent;
+            if(button.textContent!="=")//since = is not an operator
+                operator=button.textContent;
             isLastButtonOperator=1;
         }
         else if(button.classList=="clear"){
