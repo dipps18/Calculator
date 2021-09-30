@@ -13,7 +13,7 @@ function multiply(a,b){
 function divide(a,b){
     if(b==0)
         return("Error, cannot divide by 0");
-    return (a/b);
+    return (a/b).toFixed(2);
 }
 function clear(){
     paraBottom.textContent=0;
@@ -24,12 +24,12 @@ function clear(){
 
 function calcTotal(a,b,operator){
     if(operator=="+")
-        return add(a,b);
+        return add(a,b).toFixed(2);
     else if(operator=="-")
-        return subtract(a,b);
+        return subtract(a,b).toFixed(2);
     else if(operator=="*")
-        return multiply(a,b);
-    else 
+        return multiply(a,b).toFixed(2);
+    else
         return divide(a,b);
 }
 
@@ -81,22 +81,14 @@ buttons.forEach((button)=>{
                 b=100;
                 let total=calcTotal(a,b,divide);
                 paraBottom.textContent=total;
-                prevOperator="%";
+                prevButton="numbers";
             }
-            else if(curOperator!="="){
-                //if the previous button is number or there is no previous button, then 0(paraBottom.textContent) along with the operator are displayed on the top screen 
-                if(!prevOperator){
-                    updateScreen(paraBottom.textContent,curOperator);
-                }
-            
-                else if((prevButton=="numbers" || prevButton=="backspace"||prevOperator=="%" ) && paraTop.textContent && prevOperator!="="){
+            else if(curOperator!="="){            
+                if((prevButton=="numbers" || prevButton=="backspace") && paraTop.textContent && prevOperator!="="){
                     let a,b,total;
                     a=parseFloat(paraTop.textContent.replace(/[^0-9.-]/g));
                     b=parseFloat(paraBottom.textContent.replace(/[^0-9.-]/g));
-                    if(prevOperator!="%")
-                        total=calcTotal(a,b,prevOperator);
-                    else 
-                        total=calcTotal(a,b,curOperator);
+                    total=calcTotal(a,b,curOperator);
                     updateScreen(total,curOperator);
                 }
 
@@ -111,12 +103,14 @@ buttons.forEach((button)=>{
                     let a=parseFloat(paraTop.textContent.replace(/[^0-9.-]/g));
                     let b=parseFloat(paraBottom.textContent.replace(/[^0-9.-]/g));
                     let total=calcTotal(a,b,prevOperator);
+                    
                     paraTop.textContent=`${a} ${prevOperator} ${b} =`
                     paraBottom.textContent=`${total}`;
                     prevOperator="=";
                 }
             }
-            prevButton="operator";
+            if(curOperator!="%")
+                prevButton="operator";
         }
         
         else if(button.classList=="clear"){
