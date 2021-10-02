@@ -110,7 +110,7 @@ function buttonListener(button){
         }   
 
         else if(curOperator=="="){
-            if(prevButton && prevButton!="operator" && prevButton!="backspace"){
+            if(prevOperator && prevOperator!="=" && prevButton && prevButton!="operator" && prevButton!="backspace"){
                 let total=initTotal(prevOperator); 
                 paraTop.textContent=`${a} ${prevOperator} ${b} =`
                 paraBottom.textContent=`${total}`;
