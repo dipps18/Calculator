@@ -38,6 +38,11 @@ function updateScreen(value,operator){
     paraBottom.textContent=`${value}`;
 }
 
+function initTotal(operator){
+    a=parseFloat(paraTop.textContent.replace(/[^0-9.-]/g));
+    b=parseFloat(paraBottom.textContent.replace(/[^0-9.-]/g));
+    return(calcTotal(a,b,operator));
+}
 
 const bottomScreen=document.querySelector('.bottom');
 const topScreen=document.querySelector('.top');
@@ -49,86 +54,92 @@ paraBottom.textContent="0";
 let prevOperator,curOperator,prevButton;
 let buttonClass,buttonText;
 let decimalUsed=0;
-
 const buttons=document.querySelectorAll('button');
 
-buttons.forEach((button)=>{
-    button.addEventListener('click',()=>{    
-           buttonClass=button.parentElement.classList;
-        buttonText=button.textContent;
+document.addEventListener('keydown',(e)=>{
 
-        if(buttonClass=="numbers"){ 
-            if(paraBottom.textContent.indexOf('.')==-1)
-                decimalUsed=0;
-            else
-                decimalUsed=1;
+    if(e.key==="=")
+        document.getElementById(`Enter`).click();
+    else
+        document.getElementById(`${e.key}`).click();
+    
+})
 
-            if(prevButton!="numbers" && button.textContent!="."){
-                paraBottom.textContent=buttonText;
-            }
-            else if(decimalUsed==0 || button.textContent!="."){
-                paraBottom.textContent+=buttonText;
-            }
+function buttonListener(button){
+
+    buttonClass=button.parentElement.classList;
+    buttonText=button.textContent;
+
+    if(buttonClass=="numbers"){ 
+        if(paraBottom.textContent.indexOf('.')==-1)
+            decimalUsed=0;
+        else
+            decimalUsed=1;
+
+        if(prevButton!="numbers" && button.textContent!="."){
+            paraBottom.textContent=buttonText;
+        }
+        else if(decimalUsed==0 || button.textContent!="."){
+            paraBottom.textContent+=buttonText;
+        }
+        prevButton="numbers";
+    }
+
+    else if(button.classList=="operator"){
+        curOperator=button.textContent;
+        console.log(curOperator);
+
+        if(curOperator=="%"){
+            let a=parseFloat(paraBottom.textContent);
+            b=100;
+            let total=calcTotal(a,b,divide);
+            paraBottom.textContent=total;
             prevButton="numbers";
         }
-
-        else if(button.classList=="operator"){
-            curOperator=button.textContent;
-            console.log(curOperator);
-
-            if(curOperator=="%"){
-                let a=parseFloat(paraBottom.textContent);
-                b=100;
-                let total=calcTotal(a,b,divide);
-                paraBottom.textContent=total;
-                prevButton="numbers";
+        else if(curOperator!="="){            
+            if((prevButton=="numbers" || prevButton=="backspace") && paraTop.textContent && prevOperator!="="){
+                let total;
+                total=initTotal(curOperator);
+                updateScreen(total,curOperator);
             }
-            else if(curOperator!="="){            
-                if((prevButton=="numbers" || prevButton=="backspace") && paraTop.textContent && prevOperator!="="){
-                    let a,b,total;
-                    a=parseFloat(paraTop.textContent.replace(/[^0-9.-]/g));
-                    b=parseFloat(paraBottom.textContent.replace(/[^0-9.-]/g));
-                    total=calcTotal(a,b,curOperator);
-                    updateScreen(total,curOperator);
-                }
 
-                else{
-                    updateScreen(paraBottom.textContent,curOperator);
-                }
-                prevOperator=curOperator;
-            }   
-
-            else if(curOperator=="="){
-                if(prevButton && prevButton!="operator" && prevButton!="backspace"){
-                    let a=parseFloat(paraTop.textContent.replace(/[^0-9.-]/g));
-                    let b=parseFloat(paraBottom.textContent.replace(/[^0-9.-]/g));
-                    let total=calcTotal(a,b,prevOperator);
-                    
-                    paraTop.textContent=`${a} ${prevOperator} ${b} =`
-                    paraBottom.textContent=`${total}`;
-                    prevOperator="=";
-                }
+            else{
+                updateScreen(paraBottom.textContent,curOperator);
             }
-            if(curOperator!="%")
-                prevButton="operator";
-        }
-        
-        else if(button.classList=="clear"){
-            paraBottom.textContent="0"
-            paraTop.textContent="";
-            curOperator="";
-            prevOperator="";
-            prevButton="clear";
-        }
+            prevOperator=curOperator;
+        }   
 
-        else if(button.classList=="backspace"){
-            paraBottom.textContent=paraBottom.textContent.slice(0,-1);
-            if(!paraBottom.textContent)
-                paraBottom.textContent=0;
-            prevButton="backspace";
+        else if(curOperator=="="){
+            if(prevButton && prevButton!="operator" && prevButton!="backspace"){
+                let total=initTotal(prevOperator); 
+                paraTop.textContent=`${a} ${prevOperator} ${b} =`
+                paraBottom.textContent=`${total}`;
+                prevOperator="=";
+            }
         }
+        if(curOperator!="%")
+            prevButton="operator";
+    }
+    
+    else if(button.classList=="clear"){
+        paraBottom.textContent="0"
+        paraTop.textContent="";
+        curOperator="";
+        prevOperator="";
+        prevButton="clear";
+    }
 
-    })
+    else if(button.classList=="backspace"){
+        paraBottom.textContent=paraBottom.textContent.slice(0,-1);
+        if(!paraBottom.textContent)
+            paraBottom.textContent=0;
+        prevButton="backspace";
+    }
 
+}
+
+buttons.forEach((button)=>{
+    
+    button.addEventListener('click',function(){buttonListener(button)});
 })
 
